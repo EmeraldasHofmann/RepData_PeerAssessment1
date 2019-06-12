@@ -9,6 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="D. Schierano" />
 
 
 <title>Reproducible Research: Peer Assessment 1</title>
@@ -374,6 +375,8 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Reproducible Research: Peer Assessment 1</h1>
+<h4 class="author">D. Schierano</h4>
+<h4 class="date">12 giugno 2019</h4>
 
 </div>
 
@@ -391,7 +394,7 @@ if(!file.exists(&quot;activity.csv&quot;)){
     tmp.zipfile &lt;- tempfile()
     download.file(dataURL, destfile = tmp.zipfile, method = &quot;curl&quot;)
     unzip(tmp.zipfile)
-    unlink(tmp.file)
+    unlink(tmp.zipfile)
 }
 
 # data load

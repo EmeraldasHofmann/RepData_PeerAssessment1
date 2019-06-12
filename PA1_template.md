@@ -1,13 +1,11 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
+author: "D. Schierano"
+date: "12 giugno 2019"
 output: 
   html_document:
     keep_md: true
 ---
-
-
-
-
 
 
 ## Loading and preprocessing the data
@@ -26,7 +24,7 @@ if(!file.exists("activity.csv")){
     tmp.zipfile <- tempfile()
     download.file(dataURL, destfile = tmp.zipfile, method = "curl")
     unzip(tmp.zipfile)
-    unlink(tmp.file)
+    unlink(tmp.zipfile)
 }
 
 # data load
