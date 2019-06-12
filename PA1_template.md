@@ -14,7 +14,8 @@ output:
 
 
 Load the data :
-```{r}
+
+```r
 # clean workspace
 rm(list =  ls())
 
@@ -33,10 +34,10 @@ activity.data <- read.csv("activity.csv")
 ```
 
 Process/transform the data (if necessary) into a format suitable for your analysis:
-```{r}
+
+```r
 # convert Factor-variable 'date' in to Date-variable
 activity.data$date <- as.Date(activity.data$date, "%Y-%m-%d")
-
 ```
 
 
@@ -47,8 +48,8 @@ activity.data$date <- as.Date(activity.data$date, "%Y-%m-%d")
 _For this part of the assignment, you can ignore the missing values in the dataset._
 
 Calculate the total number of steps taken per day:
-```{r barplot_fig01, fig.height=4,  fig.align='center'}
 
+```r
 total.stepsbyday <- aggregate(steps ~ date, data = activity.data, FUN = sum, na.rm = TRUE)
 
 # Barplot : Number of total steps taken every day
@@ -59,9 +60,12 @@ barplot(total.stepsbyday$steps, col = "aquamarine3",
         )
 ```
 
+<img src="PA1_template_files/figure-html/barplot_fig01-1.png" style="display: block; margin: auto;" />
+
 
 If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day:
-```{r hist1_fig02, fig.height= 4, fig.align='center'}
+
+```r
 # Histogram: I stored the histogram in "hist1" variable for future use.
 hist1 <- hist(total.stepsbyday$steps, col = "aquamarine3", ylim = c(0,30),
               xlab = "Total steps per Day", 
@@ -72,19 +76,20 @@ text(x = hist1$mids, y = hist1$counts,
      labels = hist1$counts,
      pos = 3, cex =1, col = "black"
      )
-
 ```
+
+<img src="PA1_template_files/figure-html/hist1_fig02-1.png" style="display: block; margin: auto;" />
 
 
 Calculate and report the mean and median of the total number of steps taken per day:
-```{r}
 
+```r
 mean.total.step <- mean(total.stepsbyday$steps)
 median.total.step <- median(total.stepsbyday$steps)
 ```
 
-the **mean value** of the total number of steps by day is:  `r format(mean.total.step,2)` .  
-the **median value** of the total number of steps by day is:  `r format(median.total.step,2)` .
+the **mean value** of the total number of steps by day is:  10766,19 .  
+the **median value** of the total number of steps by day is:  10765 .
 
 
 
@@ -92,8 +97,8 @@ the **median value** of the total number of steps by day is:  `r format(median.t
 
 
 Make a time series plot (i.e. _type = "l"_) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis):
-```{r timeseries_fig03, fig.align='center', fig.height=5}
 
+```r
 par(mar=c(5.1,4.1,5,2.1))
 ts.AveSteps <- aggregate(steps ~ interval, data = activity.data, mean,  na.rm = TRUE)
 
@@ -104,19 +109,20 @@ plot(steps ~ interval, data = ts.AveSteps,
      main = "Average of number of steps by interval\n (NA removed)"
      )
 grid()
-
 ```
+
+<img src="PA1_template_files/figure-html/timeseries_fig03-1.png" style="display: block; margin: auto;" />
 
 
 Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
 
+```r
 max.steps <- max(ts.AveSteps$steps)
 max.steps.interval <- ts.AveSteps[which.max(ts.AveSteps$steps),1]
 ```
 
-the **interval** `r max.steps.interval ` contains the **maximum number of steps** : `r round(max.steps,2)`
+the **interval** 835 contains the **maximum number of steps** : 206,17
 
 
 
@@ -126,10 +132,11 @@ the **interval** `r max.steps.interval ` contains the **maximum number of steps*
 Note that there are a number of days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.
 
 Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NA):
-```{r}
+
+```r
 NA.value <- sum(is.na(activity.data))
 ```
-the dataset contains `r NA.value` NA values, all found in ‘steps’ variable!
+the dataset contains 2304 NA values, all found in ‘steps’ variable!
 
 
 Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated.  
@@ -147,7 +154,8 @@ I choose to use the mean value to filling the missing value.
 
 3.  Merge the 2 dataset in a new dataset:  **activity.data.NAimputes**
 
-```{r}
+
+```r
 # 1 ->  Split in two subsets of NA value and not NA value
 NA.subset <- activity.data[is.na(activity.data$steps),]
 NotNA.subset <- activity.data[!is.na(activity.data$steps),]
@@ -156,12 +164,32 @@ NotNA.subset <- activity.data[!is.na(activity.data$steps),]
 for (i in ts.AveSteps$interval){
 NA.subset$steps[NA.subset$interval == i] <- ts.AveSteps$steps[ts.AveSteps$interval == i]
 }
-
 ```
 
 Create a new dataset that is equal to the original dataset but with the missing data filled in:
-```{r}
+
+```r
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 # 3 -> Merge subsets in new dataset without NA value
 activity.data.NAimputes <- rbind(NA.subset, NotNA.subset)
 activity.data.NAimputes <- arrange(activity.data.NAimputes,  date, interval)
@@ -171,7 +199,8 @@ Make a histogram of the total number of steps taken each day and Calculate and r
 Do these values differ from the estimates from the first part of the assignment? 
 What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r hist12_fig04, fig.height=4,  fig.align='center'}
+
+```r
 total.stepsbyday2 <- aggregate(steps ~ date, data = activity.data.NAimputes, FUN = sum)
 
 mean.total.step2 <- mean(total.stepsbyday2$steps)
@@ -201,11 +230,12 @@ text(x = hist2$mids, y = hist2$counts,
      )
 
 mtext("Total number of steps taken per day",  outer = TRUE)
-
 ```
 
-the **mean value** of the total number of steps by day is: `r format(mean.total.step2)`  
-the **median value** of the total number of steps by day is: `r format(median.total.step2)` .
+<img src="PA1_template_files/figure-html/hist12_fig04-1.png" style="display: block; margin: auto;" />
+
+the **mean value** of the total number of steps by day is: 10766,19  
+the **median value** of the total number of steps by day is: 10766,19 .
 
 
 
@@ -213,24 +243,33 @@ the **median value** of the total number of steps by day is: `r format(median.to
 
 For this part the **weekdays()** function may be of some help here. Use the dataset with the filled-in missing values for this part.
 Create a new factor variable in the dataset with two levels – _“weekday”_ and _“weekend”_ indicating whether a given date is a weekday or weekend day:
-```{r}
-Sys.setlocale(category = "LC_TIME",  locale = "en_GB.UTF-8")
 
+```r
+Sys.setlocale(category = "LC_TIME",  locale = "en_GB.UTF-8")
+```
+
+```
+## [1] "en_GB.UTF-8"
+```
+
+```r
 activity.data.NAimputes$day <- ifelse(weekdays(activity.data.NAimputes$date, abbreviate = TRUE) == "Sat" |
                                       weekdays(activity.data.NAimputes$date, abbreviate = TRUE) == "Sun", 
                                       "weekend", "weekday")
 activity.data.NAimputes$day <- as.factor(activity.data.NAimputes$day)
-
 ```
 
 Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis):
-```{r timeseriesWeek_fig05, fig.align='center'}
+
+```r
 library(lattice)
 
 ts.AveSteps.Week <- aggregate(steps ~ interval + day, data = activity.data.NAimputes,  FUN = mean)
 
 xyplot(steps ~ interval | day,  data = ts.AveSteps.Week, type = c("l","g"),  layout = c(1,2))
 ```
+
+<img src="PA1_template_files/figure-html/timeseriesWeek_fig05-1.png" style="display: block; margin: auto;" />
 
 
 
